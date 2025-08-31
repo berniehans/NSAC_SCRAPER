@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASA Space Apps Challenge Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+</head>
+<body>
+    <main class="container">
+        <h1>NASA Space Apps Challenge Dashboard</h1>
+        <p>This dashboard shows the number of teams participating in the NASA Space Apps Challenge.</p>
+        
+        <button id="run-scraper">Update Data</button>
+        <div id="progress-bar-container" style="display: none;">
+            <progress id="progress-bar" value="0" max="100"></progress>
+        </div>
+        <p id="scraper-status"></p>
+
+        <div style="margin-top: 2rem;">
+            <label for="scrape-date">Select a scrape date:</label>
+            <select id="scrape-date"></select>
+        </div>
+
+        <div style="margin-top: 2rem;">
+            <button id="sort-by-challenge">Sort by Challenge</button>
+            <button id="sort-by-teams">Sort by Teams</button>
+        </div>
+
+        <table id="data-table">
+            <thead>
+                <tr>
+                    <th>Challenge</th>
+                    <th>Team Count</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+        <h2>Historical Matrix</h2>
+        <table id="matrix-table">
+            <thead>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+    </main>
+
+    <script>
+        const tableBody = document.querySelector('#data-table tbody');
+        const matrixTableHead = document.querySelector('#matrix-table thead');
+        const matrixTableBody = document.querySelector('#matrix-table tbody');
+        const scrapeDateSelect = document.querySelector('#scrape-date');
+        const runScraperBtn = document.querySelector('#run-scraper');
+        const scraperStatus = document.querySelector('#scraper-status');
+        const sortByChallengeBtn = document.querySelector('#sort-by-challenge');
+        const sortByTeamsBtn = document.querySelector('#sort-by-teams');
+        const progressBarContainer = document.querySelector('#progress-bar-container');
+        const progressBar = document.querySelector('#progress-bar');
+
+        let historicalData = [];
+        let selectedScrape;
+
+        async function fetchData() {
+            try {
+                const response = await fetch('/api/data');
+                historicalData = await response.json();
+                populateDateSelector();
+                renderData();
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        function populateDateSelector() {
+            scrapeDateSelect.innerHTML = '';
+            historicalData.forEach((scrape, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = new Date(scrape.timestamp).toLocaleString();
+                scrapeDateSelect.appendChild(option);
+            });
+            // Select the latest scrape by default
+            scrapeDateSelect.value = historicalData.length - 1;
+        }
+
+        function renderData() {
+            const selectedIndex = scrapeDateSelect.value;
+            if (!historicalData[selectedIndex]) return;
+
+            selectedScrape = historicalData[selectedIndex];
+            renderTable(selectedScrape.challenges);
+            renderMatrix();
+        }
+
+        function renderTable(data) {
+            tableBody.innerHTML = '';
+            data.forEach(challenge => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${challenge.challenge}</td>
+                    <td>${challenge.team_count}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function renderMatrix() {
+            matrixTableHead.innerHTML = '';
+            matrixTableBody.innerHTML = '';
+
+            // Header
+            const headerRow = document.createElement('tr');
+            headerRow.innerHTML = '<th>Challenge</th>';
+            historicalData.forEach(scrape => {
+                headerRow.innerHTML += `<th>${new Date(scrape.timestamp).toLocaleDateString()}</th>`;
+            });
+            matrixTableHead.appendChild(headerRow);
+
+            // Body
+            const challenges = {}; // { challengeName: { date: count, ... } }
+            historicalData.forEach(scrape => {
+                scrape.challenges.forEach(challenge => {
+                    if (!challenges[challenge.challenge]) {
+                        challenges[challenge.challenge] = {};
+                    }
+                    challenges[challenge.challenge][scrape.timestamp] = challenge.team_count;
+                });
+            });
+
+            for (const challengeName in challenges) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${challengeName}</td>`;
+                historicalData.forEach(scrape => {
+                    const count = challenges[challengeName][scrape.timestamp] || 0;
+                    row.innerHTML += `<td>${count}</td>`;
+                });
+                matrixTableBody.appendChild(row);
+            }
+        }
+        
+        runScraperBtn.addEventListener('click', async () => {
+            scraperStatus.textContent = 'Running scraper... please wait.';
+            runScraperBtn.disabled = true;
+            progressBarContainer.style.display = 'block';
+            progressBar.value = 0;
+
+            const response = await fetch('/api/run-scraper');
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let receivedLength = 0;
+
+            // This is a simplified progress simulation.
+            // A more accurate progress bar would require the scraper to provide progress updates.
+            const progressInterval = setInterval(() => {
+                progressBar.value += 1;
+                if (progressBar.value >= 95) {
+                    clearInterval(progressInterval);
+                }
+            }, 500);
+
+            let result = '';
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) {
+                    break;
+                }
+                result += decoder.decode(value, { stream: true });
+            }
+            
+            clearInterval(progressInterval);
+            progressBar.value = 100;
+
+
+            try {
+                const jsonResult = JSON.parse(result);
+                if (response.ok) {
+                    scraperStatus.textContent = 'Scraper ran successfully!';
+                    fetchData(); // Refresh data after scraper runs
+                } else {
+                    scraperStatus.textContent = `Scraper failed: ${jsonResult.error}`;
+                }
+            } catch (error) {
+                 scraperStatus.textContent = `An error occurred: ${result}`;
+            }
+
+
+            runScraperBtn.disabled = false;
+            setTimeout(() => {
+                progressBarContainer.style.display = 'none';
+            }, 2000);
+        });
+
+        scrapeDateSelect.addEventListener('change', renderData);
+
+        sortByChallengeBtn.addEventListener('click', () => {
+            const sortedData = [...selectedScrape.challenges].sort((a, b) => a.challenge.localeCompare(b.challenge));
+            renderTable(sortedData);
+        });
+
+        sortByTeamsBtn.addEventListener('click', () => {
+            const sortedData = [...selectedScrape.challenges].sort((a, b) => b.team_count - a.team_count);
+            renderTable(sortedData);
+        });
+
+        // Initial data fetch
+        fetchData();
+    </script>
+</body>
+</html>
