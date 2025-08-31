@@ -59,18 +59,27 @@ def history_to_csv():
         if not history_data:
             return jsonify({"message": "No data in history.json to convert."}), 404
 
-        # Prepare data for CSV
+        # Collect all unique challenge names
+        all_challenges = set()
+        for entry in history_data:
+            for challenge in entry.get("challenges", []):
+                all_challenges.add(challenge.get("challenge"))
+        sorted_challenges = sorted(list(all_challenges))
+
+        # Prepare CSV header
+        fieldnames = ["Timestamp"] + sorted_challenges
+
+        # Generate CSV rows
         csv_rows = []
         for entry in history_data:
-            timestamp = entry.get("timestamp")
-            for challenge in entry.get("challenges", []):
-                csv_rows.append(
-                    {
-                        "timestamp": timestamp,
-                        "challenge": challenge.get("challenge"),
-                        "team_count": challenge.get("team_count"),
-                    }
-                )
+            row = {"Timestamp": entry.get("timestamp")}
+            challenge_map = {
+                c.get("challenge"): c.get("team_count")
+                for c in entry.get("challenges", [])
+            }
+            for challenge_name in sorted_challenges:
+                row[challenge_name] = challenge_map.get(challenge_name, 0)
+            csv_rows.append(row)
 
         if not csv_rows:
             return (
@@ -82,7 +91,6 @@ def history_to_csv():
 
         # Create a CSV in memory
         si = io.StringIO()
-        fieldnames = ["timestamp", "challenge", "team_count"]
         writer = csv.DictWriter(si, fieldnames=fieldnames)
 
         writer.writeheader()
