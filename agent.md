@@ -21,3 +21,34 @@ Create a web scraper using Playwright to extract the number of teams from a list
 ## URLs
 
 The scraper uses a predefined list of challenge URLs.
+
+## Web Interface
+
+A Flask-based web application (`app.py`) has been implemented to provide a user interface for the scraper data.
+
+### `index.html`
+
+*   **Purpose**: Main dashboard to display current team counts, trigger scraper runs, and export data.
+*   **Changes**:
+    *   Removed the "Historical Matrix" navigation link from the top navigation bar.
+    *   Removed the "Historical Matrix" section (heading and table) from the main content area.
+    *   Removed the JavaScript code responsible for rendering the matrix table within this page.
+
+### `matrix.html`
+
+*   **Purpose**: Dedicated page to display the historical matrix of team counts and their evolution over time.
+*   **Changes**:
+    *   Added a navigation bar at the top to allow easy switching between the "Main Dashboard" and "Historical Matrix" pages.
+    *   Integrated the Chart.js library for data visualization.
+    *   Added a `<canvas>` element to render a line chart.
+    *   Implemented JavaScript logic to:
+        *   Fetch historical data.
+        *   Process the data to create datasets for each challenge.
+        *   Render a responsive line chart showing the evolution of team counts for each challenge across different timestamps. Random colors are generated for each line.
+
+## Project Configuration (`pyproject.toml`)
+
+*   **Development Dependencies**:
+    *   Added `black`, `isort`, and `ruff` to the `dev-dependencies` list under `[tool.rye]`.
+*   **Rye Scripts**:
+    *   The `review` script under `[tool.rye.scripts]` has been updated. It now includes the `--fix` option for `ruff check .`, allowing automatic fixing of linting issues when the script is run.

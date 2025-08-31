@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historical Matrix</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <nav class="container">
@@ -15,6 +16,10 @@
     </nav>
     <main class="container">
         <h1>Historical Matrix</h1>
+
+        <figure>
+            <canvas id="challengeChart"></canvas>
+        </figure>
 
         <table id="matrix-table">
             <thead>
@@ -29,12 +34,14 @@
         const matrixTableBody = document.querySelector('#matrix-table tbody');
 
         let historicalData = [];
+        let myChart; // To store the Chart.js instance
 
         async function fetchData() {
             try {
                 const response = await fetch('/api/data');
                 historicalData = await response.json();
                 renderMatrix();
+                renderChart();
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -76,6 +83,75 @@
                     row.innerHTML += `<td>${count}</td>`;
                 });
                 matrixTableBody.appendChild(row);
+            });
+        }
+
+        function renderChart() {
+            if (myChart) {
+                myChart.destroy(); // Destroy existing chart if it exists
+            }
+
+            const ctx = document.getElementById('challengeChart').getContext('2d');
+
+            const labels = historicalData.map(scrape => new Date(scrape.timestamp).toLocaleString());
+
+            const allChallenges = new Set();
+            historicalData.forEach(scrape => {
+                scrape.challenges.forEach(challenge => {
+                    allChallenges.add(challenge.challenge);
+                });
+            });
+            const sortedChallenges = Array.from(allChallenges).sort();
+
+            const datasets = sortedChallenges.map(challengeName => {
+                const data = historicalData.map(scrape => {
+                    const challenge = scrape.challenges.find(c => c.challenge === challengeName);
+                    return challenge ? challenge.team_count : 0;
+                });
+                
+                // Generate a random color for each line
+                const color = `hsl(${Math.random() * 360}, 70%, 50%)`;
+
+                return {
+                    label: challengeName,
+                    data: data,
+                    borderColor: color,
+                    backgroundColor: color,
+                    fill: false,
+                    tension: 0.1
+                };
+            });
+
+            myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Evolution of Team Counts per Challenge'
+                        },
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Timestamp'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Team Count'
+                            },
+                            beginAtZero: true
+                        }
+                    }
+                }
             });
         }
 

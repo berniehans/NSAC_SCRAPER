@@ -565,5 +565,167 @@
                 "team_count": 110
             }
         ]
+    },
+    {
+        "timestamp": "2025-08-31T23:13:19.754368+00:00",
+        "challenges": [
+            {
+                "challenge": "Animation Celebration Of Terra Data",
+                "team_count": 89
+            },
+            {
+                "challenge": "A World Away Hunting For Exoplanets With Ai",
+                "team_count": 375
+            },
+            {
+                "challenge": "Bloomwatch An Earth Observation Application For Global Flowering Phenology",
+                "team_count": 86
+            },
+            {
+                "challenge": "Build A Space Biology Knowledge Engine",
+                "team_count": 135
+            },
+            {
+                "challenge": "Commercializing Low Earth Orbit Leo",
+                "team_count": 75
+            },
+            {
+                "challenge": "Create Your Own Challenge",
+                "team_count": 242
+            },
+            {
+                "challenge": "Data Pathways To Healthy Cities And Human Settlements",
+                "team_count": 116
+            },
+            {
+                "challenge": "Deep Dive Immersive Data Stories From Ocean To Sky",
+                "team_count": 34
+            },
+            {
+                "challenge": "Embiggen Your Eyes",
+                "team_count": 72
+            },
+            {
+                "challenge": "From Earthdata To Action Cloud Computing With Earth Observation Data For Predicting Cleaner Safer Skies",
+                "team_count": 140
+            },
+            {
+                "challenge": "International Space Station 25Th Anniversary Apps",
+                "team_count": 50
+            },
+            {
+                "challenge": "Meteor Madness",
+                "team_count": 146
+            },
+            {
+                "challenge": "Nasa Farm Navigators Using Nasa Data Exploration In Agriculture",
+                "team_count": 119
+            },
+            {
+                "challenge": "Sharks From Space",
+                "team_count": 41
+            },
+            {
+                "challenge": "Spacetrash Hack Revolutionizing Recycling On Mars",
+                "team_count": 100
+            },
+            {
+                "challenge": "Stellar Stories Space Weather Through The Eyes Of Earthlings",
+                "team_count": 124
+            },
+            {
+                "challenge": "Through The Radar Looking Glass Revealing Earth Processes With Sar",
+                "team_count": 38
+            },
+            {
+                "challenge": "Will It Rain On My Parade",
+                "team_count": 202
+            },
+            {
+                "challenge": "Your Home In Space The Habitat Layout Creator",
+                "team_count": 110
+            }
+        ]
+    },
+    {
+        "timestamp": "2025-08-31T23:16:53.801830+00:00",
+        "challenges": [
+            {
+                "challenge": "Animation Celebration Of Terra Data",
+                "team_count": 89
+            },
+            {
+                "challenge": "A World Away Hunting For Exoplanets With Ai",
+                "team_count": 375
+            },
+            {
+                "challenge": "Bloomwatch An Earth Observation Application For Global Flowering Phenology",
+                "team_count": 86
+            },
+            {
+                "challenge": "Build A Space Biology Knowledge Engine",
+                "team_count": 135
+            },
+            {
+                "challenge": "Commercializing Low Earth Orbit Leo",
+                "team_count": 75
+            },
+            {
+                "challenge": "Create Your Own Challenge",
+                "team_count": 242
+            },
+            {
+                "challenge": "Data Pathways To Healthy Cities And Human Settlements",
+                "team_count": 116
+            },
+            {
+                "challenge": "Deep Dive Immersive Data Stories From Ocean To Sky",
+                "team_count": 34
+            },
+            {
+                "challenge": "Embiggen Your Eyes",
+                "team_count": 72
+            },
+            {
+                "challenge": "From Earthdata To Action Cloud Computing With Earth Observation Data For Predicting Cleaner Safer Skies",
+                "team_count": 140
+            },
+            {
+                "challenge": "International Space Station 25Th Anniversary Apps",
+                "team_count": 50
+            },
+            {
+                "challenge": "Meteor Madness",
+                "team_count": 146
+            },
+            {
+                "challenge": "Nasa Farm Navigators Using Nasa Data Exploration In Agriculture",
+                "team_count": 119
+            },
+            {
+                "challenge": "Sharks From Space",
+                "team_count": 41
+            },
+            {
+                "challenge": "Spacetrash Hack Revolutionizing Recycling On Mars",
+                "team_count": 100
+            },
+            {
+                "challenge": "Stellar Stories Space Weather Through The Eyes Of Earthlings",
+                "team_count": 124
+            },
+            {
+                "challenge": "Through The Radar Looking Glass Revealing Earth Processes With Sar",
+                "team_count": 38
+            },
+            {
+                "challenge": "Will It Rain On My Parade",
+                "team_count": 202
+            },
+            {
+                "challenge": "Your Home In Space The Habitat Layout Creator",
+                "team_count": 110
+            }
+        ]
     }
 ]

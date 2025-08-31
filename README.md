@@ -1,6 +1,17 @@
 # NASA Space Apps Challenge Scraper
 
-This project is a web scraper that collects the number of teams participating in the NASA Space Apps Challenge. It scrapes the data from the official website and saves it to a JSON file.
+This project is a web scraper that collects the number of teams participating in the NASA Space Apps Challenge. It scrapes the data from the official website and provides a web interface to view the current and historical data.
+
+## Features
+
+*   **Data Scraping**: Scrapes team counts for various challenges from the NASA Space Apps Challenge website.
+*   **Data Storage**: Stores scraped data, including timestamps, in `teams.json`.
+*   **Web Interface**: A Flask-based web application to:
+    *   Display current team counts.
+    *   Manually trigger data updates.
+    *   Export historical data to CSV.
+    *   View a historical matrix of team counts.
+    *   Visualize the evolution of team counts for each challenge over time using a line chart.
 
 ## How to use
 
@@ -12,17 +23,23 @@ This project is a web scraper that collects the number of teams participating in
     rye sync
     ```
 
-2.  **Run the scraper:**
+2.  **Run the web application:**
 
-    ```bash
-    rye run python scraper.py
-    ```
-
-    This will create a `teams.json` file with the scraped data.
-    
     ```bash
     rye run flask --app app.py run
     ```
+    Access the web interface at `http://127.0.0.1:5000/`.
+
+3.  **Run the scraper (via web interface):**
+    On the main dashboard, click the "Update Data" button to run the scraper and fetch the latest team counts.
+
+4.  **Code Review and Formatting:**
+
+    To run code formatting and linting checks:
+    ```bash
+    rye run review
+    ```
+
 ## Data
 
 The `teams.json` file contains a list of challenges with the number of teams for each challenge, along with a timestamp of when the data was scraped.
