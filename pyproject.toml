@@ -19,7 +19,18 @@ build-backend = "hatchling.build"
 
 [tool.rye]
 managed = true
-dev-dependencies = []
+dev-dependencies = [
+    "black",
+    "isort",
+    "ruff",
+]
+
+[tool.rye.scripts]
+review = { chain = [
+    "black .",
+    "isort .",
+    "ruff check . --fix"
+] }
 
 [tool.hatch.metadata]
 allow-direct-references = true

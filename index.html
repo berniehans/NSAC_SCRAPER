@@ -7,11 +7,18 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
 </head>
 <body>
+    <nav class="container">
+        <ul>
+            <li><a href="/">Main Dashboard</a></li>
+            <li><a href="/matrix">Historical Matrix</a></li>
+        </ul>
+    </nav>
     <main class="container">
         <h1>NASA Space Apps Challenge Dashboard</h1>
         <p>This dashboard shows the number of teams participating in the NASA Space Apps Challenge.</p>
         
         <button id="run-scraper">Update Data</button>
+        <button id="export-history-csv">Export History to CSV</button>
         <div id="progress-bar-container" style="display: none;">
             <progress id="progress-bar" value="0" max="100"></progress>
         </div>
@@ -38,7 +45,6 @@
             </tbody>
         </table>
 
-        <h2>Historical Matrix</h2>
         <table id="matrix-table">
             <thead>
             </thead>
@@ -107,39 +113,7 @@
             });
         }
 
-        function renderMatrix() {
-            matrixTableHead.innerHTML = '';
-            matrixTableBody.innerHTML = '';
-
-            // Header
-            const headerRow = document.createElement('tr');
-            headerRow.innerHTML = '<th>Challenge</th>';
-            historicalData.forEach(scrape => {
-                headerRow.innerHTML += `<th>${new Date(scrape.timestamp).toLocaleDateString()}</th>`;
-            });
-            matrixTableHead.appendChild(headerRow);
-
-            // Body
-            const challenges = {}; // { challengeName: { date: count, ... } }
-            historicalData.forEach(scrape => {
-                scrape.challenges.forEach(challenge => {
-                    if (!challenges[challenge.challenge]) {
-                        challenges[challenge.challenge] = {};
-                    }
-                    challenges[challenge.challenge][scrape.timestamp] = challenge.team_count;
-                });
-            });
-
-            for (const challengeName in challenges) {
-                const row = document.createElement('tr');
-                row.innerHTML = `<td>${challengeName}</td>`;
-                historicalData.forEach(scrape => {
-                    const count = challenges[challengeName][scrape.timestamp] || 0;
-                    row.innerHTML += `<td>${count}</td>`;
-                });
-                matrixTableBody.appendChild(row);
-            }
-        }
+        
         
         runScraperBtn.addEventListener('click', async () => {
             scraperStatus.textContent = 'Running scraper... please wait.';
@@ -207,6 +181,29 @@
 
         // Initial data fetch
         fetchData();
+
+        const exportCsvBtn = document.querySelector('#export-history-csv');
+        exportCsvBtn.addEventListener('click', async () => {
+            try {
+                const response = await fetch('/api/history-to-csv');
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'history.csv';
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                } else {
+                    alert('Error exporting to CSV: ' + response.statusText);
+                }
+            } catch (error) {
+                console.error('Error exporting to CSV:', error);
+                alert('Error exporting to CSV.');
+            }
+        });
     </script>
 </body>
 </html>

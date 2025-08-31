@@ -1,8 +1,9 @@
-
 import json
 import re
-from playwright.sync_api import sync_playwright
 from datetime import datetime, timezone
+
+from playwright.sync_api import sync_playwright
+
 
 def scrape_challenge_data(urls, xpath):
     """
@@ -18,33 +19,33 @@ def scrape_challenge_data(urls, xpath):
     with sync_playwright() as p:
         browser = p.chromium.launch()
         page = browser.new_page()
-        
+
         results = []
         for i, url in enumerate(urls):
             try:
                 page.goto(url, wait_until="networkidle")
-                
+
                 # Scrape team count
                 team_count_element = page.locator(f"xpath={xpath}")
                 team_count_text = team_count_element.inner_text(timeout=5000)
-                team_count_match = re.search(r'\d+', team_count_text)
+                team_count_match = re.search(r"\d+", team_count_text)
                 team_count = int(team_count_match.group(0)) if team_count_match else 0
-                
-                # Get title from URL
-                slug = url.split('/')[-2]
-                title = slug.replace('-', ' ').title()
 
-                results.append({
-                    "challenge": title,
-                    "team_count": team_count
-                })
-                print(f"({i+1}/{len(urls)}) Successfully scraped {team_count} teams for '{title}'")
+                # Get title from URL
+                slug = url.split("/")[-2]
+                title = slug.replace("-", " ").title()
+
+                results.append({"challenge": title, "team_count": team_count})
+                print(
+                    f"({i+1}/{len(urls)}) Successfully scraped {team_count} teams for '{title}'"
+                )
 
             except Exception as e:
                 print(f"Could not scrape data for {url}. Error: {e}")
-        
+
         browser.close()
         return results
+
 
 def save_to_history(data, filename):
     """
@@ -56,15 +57,16 @@ def save_to_history(data, filename):
     """
     history = []
     try:
-        with open(filename, 'r') as f:
+        with open(filename, "r") as f:
             history = json.load(f)
     except FileNotFoundError:
-        pass # File doesn't exist yet
+        pass  # File doesn't exist yet
 
     history.append(data)
 
-    with open(filename, 'w') as f:
+    with open(filename, "w") as f:
         json.dump(history, f, indent=4)
+
 
 if __name__ == "__main__":
     CHALLENGE_URLS = [
@@ -86,15 +88,15 @@ if __name__ == "__main__":
         "https://www.spaceappschallenge.org/2025/challenges/stellar-stories-space-weather-through-the-eyes-of-earthlings/?tab=teams",
         "https://www.spaceappschallenge.org/2025/challenges/through-the-radar-looking-glass-revealing-earth-processes-with-sar/?tab=teams",
         "https://www.spaceappschallenge.org/2025/challenges/will-it-rain-on-my-parade/?tab=teams",
-        "https://www.spaceappschallenge.org/2025/challenges/your-home-in-space-the-habitat-layout-creator/?tab=teams"
+        "https://www.spaceappschallenge.org/2025/challenges/your-home-in-space-the-habitat-layout-creator/?tab=teams",
     ]
     XPATH = "/html/body/main/section/div/div[3]/div/div/div/div[3]/div/p"
-    
+
     results = scrape_challenge_data(CHALLENGE_URLS, XPATH)
 
     output_data = {
         "timestamp": datetime.now(timezone.utc).isoformat(),
-        "challenges": results
+        "challenges": results,
     }
 
     save_to_history(output_data, "history.json")

@@ -1,13 +1,13 @@
 {
-    "timestamp": "2025-08-31T18:54:43.557147+00:00",
+    "timestamp": "2025-08-31T21:02:52.423118+00:00",
     "challenges": [
         {
             "challenge": "Animation Celebration Of Terra Data",
-            "team_count": 88
+            "team_count": 89
         },
         {
             "challenge": "A World Away Hunting For Exoplanets With Ai",
-            "team_count": 372
+            "team_count": 374
         },
         {
             "challenge": "Bloomwatch An Earth Observation Application For Global Flowering Phenology",
@@ -23,7 +23,7 @@
         },
         {
             "challenge": "Create Your Own Challenge",
-            "team_count": 239
+            "team_count": 241
         },
         {
             "challenge": "Data Pathways To Healthy Cities And Human Settlements",
@@ -35,15 +35,15 @@
         },
         {
             "challenge": "Embiggen Your Eyes",
-            "team_count": 70
+            "team_count": 71
         },
         {
             "challenge": "From Earthdata To Action Cloud Computing With Earth Observation Data For Predicting Cleaner Safer Skies",
-            "team_count": 138
+            "team_count": 140
         },
         {
             "challenge": "International Space Station 25Th Anniversary Apps",
-            "team_count": 47
+            "team_count": 49
         },
         {
             "challenge": "Meteor Madness",
@@ -59,11 +59,11 @@
         },
         {
             "challenge": "Spacetrash Hack Revolutionizing Recycling On Mars",
-            "team_count": 99
+            "team_count": 100
         },
         {
             "challenge": "Stellar Stories Space Weather Through The Eyes Of Earthlings",
-            "team_count": 123
+            "team_count": 124
         },
         {
             "challenge": "Through The Radar Looking Glass Revealing Earth Processes With Sar",
@@ -75,7 +75,7 @@
         },
         {
             "challenge": "Your Home In Space The Habitat Layout Creator",
-            "team_count": 109
+            "team_count": 110
         }
     ]
 }

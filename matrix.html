@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historical Matrix</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+</head>
+<body>
+    <nav class="container">
+        <ul>
+            <li><a href="/">Main Dashboard</a></li>
+            <li><a href="/matrix">Historical Matrix</a></li>
+        </ul>
+    </nav>
+    <main class="container">
+        <h1>Historical Matrix</h1>
+
+        <table id="matrix-table">
+            <thead>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </main>
+
+    <script>
+        const matrixTableHead = document.querySelector('#matrix-table thead');
+        const matrixTableBody = document.querySelector('#matrix-table tbody');
+
+        let historicalData = [];
+
+        async function fetchData() {
+            try {
+                const response = await fetch('/api/data');
+                historicalData = await response.json();
+                renderMatrix();
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        function renderMatrix() {
+            matrixTableHead.innerHTML = '';
+            matrixTableBody.innerHTML = '';
+
+            // Collect all unique challenges
+            const allChallenges = new Set();
+            historicalData.forEach(scrape => {
+                scrape.challenges.forEach(challenge => {
+                    allChallenges.add(challenge.challenge);
+                });
+            });
+            const sortedChallenges = Array.from(allChallenges).sort();
+
+            // Header: Timestamp and then all unique challenges
+            const headerRow = document.createElement('tr');
+            headerRow.innerHTML = '<th>Timestamp</th>';
+            sortedChallenges.forEach(challengeName => {
+                headerRow.innerHTML += `<th>${challengeName}</th>`;
+            });
+            matrixTableHead.appendChild(headerRow);
+
+            // Body: Each row is a timestamp, followed by team counts for each challenge
+            historicalData.forEach(scrape => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${new Date(scrape.timestamp).toLocaleString()}</td>`; // Include time
+
+                const challengeMap = {};
+                scrape.challenges.forEach(challenge => {
+                    challengeMap[challenge.challenge] = challenge.team_count;
+                });
+
+                sortedChallenges.forEach(challengeName => {
+                    const count = challengeMap[challengeName] || 0; // Display 0 if challenge not present for that scrape
+                    row.innerHTML += `<td>${count}</td>`;
+                });
+                matrixTableBody.appendChild(row);
+            });
+        }
+
+        // Initial data fetch
+        fetchData();
+    </script>
+</body>
+</html>
