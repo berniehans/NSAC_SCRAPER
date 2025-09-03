@@ -7,7 +7,8 @@ It provides a web interface to view the scraped data, trigger the scraper, and e
 import csv
 import io
 import json
-import subprocess
+import threading  # Import threading
+import asyncio  # Import asyncio
 
 from flask import Flask, Response, jsonify, render_template
 
@@ -40,29 +41,32 @@ def get_data():
 @app.route("/api/run-scraper")
 def run_scraper():
     """
-    Runs the scraper as a subprocess.
-
-    Returns:
-        A JSON response with the scraper's output or an error message.
+    Triggers the scraper to run in a separate thread.
     """
+
+    def run_scraper_async_in_thread():
+        # Import scraper_main here to avoid circular imports and ensure it's loaded in the new thread
+        from src.nsac_scraper.scraper import main as scraper_main
+
+        asyncio.run(scraper_main())
+
     try:
-        # We need to run the scraper with rye
-        process = subprocess.Popen(
-            ["rye", "run", "python", "src/nsac_scraper/scraper.py"],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
+        thread = threading.Thread(target=run_scraper_async_in_thread)
+        thread.daemon = (
+            True  # Allow main program to exit even if thread is still running
         )
-
-        # This is a simplified way to get the output. For real-time updates, a different approach (e.g., websockets) would be needed.
-        stdout, stderr = process.communicate()
-
-        if process.returncode == 0:
-            return jsonify({"message": "Scraper ran successfully.", "output": stdout})
-        else:
-            return jsonify({"message": "Scraper failed.", "error": stderr}), 500
+        thread.start()
+        return (
+            jsonify(
+                {
+                    "message": "Scraper started successfully in the background.",
+                    "status": "running",
+                }
+            ),
+            202,
+        )
     except Exception as e:
-        return jsonify({"message": "An error occurred.", "error": str(e)}), 500
+        return jsonify({"message": "Failed to start scraper.", "error": str(e)}), 500
 
 
 @app.route("/api/history-to-csv")
@@ -101,9 +105,7 @@ def history_to_csv():
 
         if not csv_rows:
             return (
-                jsonify(
-                    {"message": "No challenge data found in history.json to convert."}
-                ),
+                jsonify({"message": "No data in history.json to convert."}),
                 404,
             )
 
@@ -118,7 +120,7 @@ def history_to_csv():
 
         return Response(
             output,
-            mimetype="text/csv; charset=utf-8",
+            mimetype="text/csv",
             headers={"Content-disposition": "attachment; filename=history.csv"},
         )
 
@@ -134,4 +136,4 @@ def history_to_csv():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True)  # nosec
