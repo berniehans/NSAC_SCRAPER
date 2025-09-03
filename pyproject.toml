@@ -36,7 +36,7 @@ review = { chain = [
     "isort .",
     "ruff check . --fix"
 ] }
-test = "pytest --cov=src"
+test = "python -m pytest --cov=src"
 
 [tool.hatch.metadata]
 allow-direct-references = true

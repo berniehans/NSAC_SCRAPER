@@ -90,48 +90,30 @@ runScraperBtn.addEventListener('click', async () => {
     progressBarContainer.style.display = 'block';
     progressBar.value = 0;
 
-    const response = await fetch('/api/run-scraper');
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    let receivedLength = 0;
+    // Start the scraper
+    await fetch('/api/run-scraper');
 
-    // This is a simplified progress simulation.
-    // A more accurate progress bar would require the scraper to provide progress updates.
-    const progressInterval = setInterval(() => {
-        progressBar.value += 1;
-        if (progressBar.value >= 95) {
-            clearInterval(progressInterval);
-        }
-    }, 500);
+    // Poll for scraper status
+    const pollInterval = setInterval(async () => {
+        const response = await fetch('/api/scraper-status');
+        const data = await response.json();
 
-    let result = '';
-    try {
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) {
-                break;
-            }
-            result += decoder.decode(value, { stream: true });
-        }
-        
-        clearInterval(progressInterval);
-        progressBar.value = 100;
-
-        const jsonResult = JSON.parse(result);
-        if (response.ok) {
+        if (data.status === 'idle') {
+            clearInterval(pollInterval);
+            progressBar.value = 100;
             scraperStatus.textContent = 'Scraper ran successfully!';
             fetchData(); // Refresh data after scraper runs
+            enableUI(); // Re-enable UI elements
+            setTimeout(() => {
+                progressBarContainer.style.display = 'none';
+            }, 2000);
         } else {
-            scraperStatus.textContent = `Scraper failed: ${jsonResult.error}`;
+            // Simulate progress while running, as actual progress is not available
+            if (progressBar.value < 95) {
+                progressBar.value += 1;
+            }
         }
-    } catch (error) {
-         scraperStatus.textContent = `An error occurred: ${result}`;
-    } finally {
-        enableUI(); // Re-enable UI elements
-        setTimeout(() => {
-            progressBarContainer.style.display = 'none';
-        }, 2000);
-    }
+    }, 1000); // Poll every 1 second
 });
 
 scrapeDateSelect.addEventListener('change', renderData);

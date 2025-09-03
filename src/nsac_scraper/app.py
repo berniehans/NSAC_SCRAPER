@@ -14,6 +14,14 @@ from flask import Flask, Response, jsonify, render_template
 
 app = Flask(__name__, template_folder="../../templates", static_folder="../../static")
 
+scraper_running = False
+
+
+@app.route("/api/scraper-status")
+def get_scraper_status():
+    global scraper_running
+    return jsonify({"status": "running" if scraper_running else "idle"})
+
 
 @app.route("/")
 def index():
@@ -45,10 +53,15 @@ def run_scraper():
     """
 
     def run_scraper_async_in_thread():
-        # Import scraper_main here to avoid circular imports and ensure it's loaded in the new thread
-        from src.nsac_scraper.scraper import main as scraper_main
+        global scraper_running
+        scraper_running = True
+        try:
+            # Import scraper_main here to avoid circular imports and ensure it's loaded in the new thread
+            from src.nsac_scraper.scraper import main as scraper_main
 
-        asyncio.run(scraper_main())
+            asyncio.run(scraper_main())
+        finally:
+            scraper_running = False
 
     try:
         thread = threading.Thread(target=run_scraper_async_in_thread)
