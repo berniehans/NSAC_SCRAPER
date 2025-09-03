@@ -4,6 +4,7 @@ This script scrapes team count data from the NASA Space Apps Challenge website.
 It reads a list of challenge URLs and an XPath from a config.json file,
 scrapes the data, and saves it to history.json and teams.json.
 """
+
 import json
 import re
 from datetime import datetime, timezone
@@ -63,20 +64,20 @@ def save_to_history(data, filename):
     """
     history = []
     try:
-        with open(filename, "r") as f:
+        with open(filename, "r", encoding="utf-8") as f:
             history = json.load(f)
     except FileNotFoundError:
         pass  # File doesn't exist yet
 
     history.append(data)
 
-    with open(filename, "w") as f:
+    with open(filename, "w", encoding="utf-8") as f:
         json.dump(history, f, indent=4)
 
 
 if __name__ == "__main__":
     # Load configuration from config.json
-    with open("config.json", "r") as f:
+    with open("config.json", "r", encoding="utf-8") as f:
         config = json.load(f)
 
     CHALLENGE_URLS = config["CHALLENGE_URLS"]
@@ -93,7 +94,7 @@ if __name__ == "__main__":
 
     # Save the data to history.json and teams.json
     save_to_history(output_data, "data/history.json")
-    with open("data/teams.json", "w") as f:
+    with open("data/teams.json", "w", encoding="utf-8") as f:
         json.dump(output_data, f, indent=4)
 
     print("Scraping complete. Data saved to history.json and teams.json")

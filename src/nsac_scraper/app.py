@@ -3,6 +3,7 @@ This module contains the Flask web application for the NASA Space Apps Challenge
 
 It provides a web interface to view the scraped data, trigger the scraper, and export data to CSV.
 """
+
 import csv
 import io
 import json
@@ -29,7 +30,7 @@ def matrix():
 def get_data():
     """Returns the historical data from history.json."""
     try:
-        with open("data/history.json", "r") as f:
+        with open("data/history.json", "r", encoding="utf-8") as f:
             data = json.load(f)
         return jsonify(data)
     except FileNotFoundError:
@@ -70,7 +71,7 @@ def history_to_csv():
     Converts the history.json data to a CSV file and returns it as a download.
     """
     try:
-        with open("data/history.json", "r") as f:
+        with open("data/history.json", "r", encoding="utf-8") as f:
             history_data = json.load(f)
 
         if not history_data:
@@ -117,7 +118,7 @@ def history_to_csv():
 
         return Response(
             output,
-            mimetype="text/csv",
+            mimetype="text/csv; charset=utf-8",
             headers={"Content-disposition": "attachment; filename=history.csv"},
         )
 
