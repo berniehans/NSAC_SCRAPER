@@ -5,13 +5,13 @@ It reads a list of challenge URLs and an XPath from a config.json file,
 scrapes the data, and saves it to history.json and teams.json.
 """
 
+import asyncio
 import json
 import re
-import asyncio
 from datetime import datetime, timezone
 
 from playwright.async_api import async_playwright
-from tenacity import retry, stop_after_attempt, wait_fixed, retry_if_exception_type
+from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_fixed
 
 
 # Define a retry decorator for network operations

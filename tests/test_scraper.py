@@ -1,12 +1,13 @@
-import pytest
 import json
 import os
-from unittest.mock import AsyncMock, patch, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
 
 from src.nsac_scraper.scraper import (
-    scrape_challenge_data,
-    save_to_history,
     main,
+    save_to_history,
+    scrape_challenge_data,
     scrape_single_challenge,
 )
 

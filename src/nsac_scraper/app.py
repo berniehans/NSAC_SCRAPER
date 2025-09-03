@@ -4,11 +4,11 @@ This module contains the Flask web application for the NASA Space Apps Challenge
 It provides a web interface to view the scraped data, trigger the scraper, and export data to CSV.
 """
 
+import asyncio  # Import asyncio
 import csv
 import io
 import json
 import threading  # Import threading
-import asyncio  # Import asyncio
 
 from flask import Flask, Response, jsonify, render_template
 

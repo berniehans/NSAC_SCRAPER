@@ -1,13 +1,11 @@
-import sys
-import os
-import json
 import csv
 import io
-from unittest.mock import patch, MagicMock
-
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+import json
+import os
+from unittest.mock import MagicMock, patch
 
 import pytest
+
 from src.nsac_scraper.app import app as flask_app
 
 
