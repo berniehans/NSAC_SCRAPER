@@ -14,37 +14,52 @@ Create a web scraper using Playwright to extract the number of teams from a list
     *   The challenge title should be extracted from the URL slug.
 
 2.  **Storage:**
-    *   The extracted data should be saved in a JSON file named `teams.json`.
-    *   The JSON file should contain a timestamp and a list of challenges with their team counts.
-    *   The scraper should be designed to be run on demand.
+    *   The extracted data is saved in a JSON format.
+    *   `data/history.json` stores the history of all scrapes.
+    *   `data/teams.json` stores the latest scrape.
+    *   The scraper is designed to be run on demand.
 
-## URLs
+3.  **Configuration:**
+    *   The scraper configuration (URLs and XPath) is stored in `config.json`.
 
-The scraper uses a predefined list of challenge URLs.
+## Project Structure
+
+The project is organized as follows:
+
+```
+.
+├── data
+│   ├── history.json
+│   └── teams.json
+├── src
+│   └── nsac_scraper
+│       ├── __init__.py
+│       ├── app.py
+│       └── scraper.py
+├── static
+│   └── js
+│       ├── index.js
+│       └── matrix.js
+├── templates
+│   ├── index.html
+│   └── matrix.html
+├── .gitignore
+├── config.json
+├── pyproject.toml
+└── README.md
+```
 
 ## Web Interface
 
-A Flask-based web application (`app.py`) has been implemented to provide a user interface for the scraper data.
+A Flask-based web application (`src/nsac_scraper/app.py`) provides a user interface for the scraper data.
 
-### `index.html`
+### `templates/index.html` & `templates/matrix.html`
 
-*   **Purpose**: Main dashboard to display current team counts, trigger scraper runs, and export data.
-*   **Changes**:
-    *   Removed the "Historical Matrix" navigation link from the top navigation bar.
-    *   Removed the "Historical Matrix" section (heading and table) from the main content area.
-    *   Removed the JavaScript code responsible for rendering the matrix table within this page.
+*   The HTML files for the web interface.
 
-### `matrix.html`
+### `static/js/`
 
-*   **Purpose**: Dedicated page to display the historical matrix of team counts and their evolution over time.
-*   **Changes**:
-    *   Added a navigation bar at the top to allow easy switching between the "Main Dashboard" and "Historical Matrix" pages.
-    *   Integrated the Chart.js library for data visualization.
-    *   Added a `<canvas>` element to render a line chart.
-    *   Implemented JavaScript logic to:
-        *   Fetch historical data.
-        *   Process the data to create datasets for each challenge.
-        *   Render a responsive line chart showing the evolution of team counts for each challenge across different timestamps. Random colors are generated for each line.
+*   The JavaScript files for the web interface, `index.js` and `matrix.js`, are located here.
 
 ## Project Configuration (`pyproject.toml`)
 
