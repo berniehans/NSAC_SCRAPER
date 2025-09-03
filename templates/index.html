@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASA Space Apps Challenge Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+</head>
+<body>
+    <nav class="container">
+        <ul>
+            <li><a href="/">Main Dashboard</a></li>
+            <li><a href="/matrix">Historical Matrix</a></li>
+        </ul>
+    </nav>
+    <main class="container">
+        <h1>NASA Space Apps Challenge Dashboard</h1>
+        <p>This dashboard shows the number of teams participating in the NASA Space Apps Challenge.</p>
+        
+        <button id="run-scraper">Update Data</button>
+        <button id="export-history-csv">Export History to CSV</button>
+        <div id="progress-bar-container" style="display: none;">
+            <progress id="progress-bar" value="0" max="100"></progress>
+        </div>
+        <p id="scraper-status"></p>
+
+        <div style="margin-top: 2rem;">
+            <label for="scrape-date">Select a scrape date:</label>
+            <select id="scrape-date"></select>
+        </div>
+
+        <div style="margin-top: 2rem;">
+            <button id="sort-by-challenge">Sort by Challenge Name</button>
+            <button id="sort-by-teams">Sort by Teams Count</button>
+        </div>
+
+        <table id="data-table">
+            <thead>
+                <tr>
+                    <th>Challenge</th>
+                    <th>Team Count</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+        <table id="matrix-table">
+            <thead>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+    </main>
+
+    <script src="/static/js/index.js"></script>
+</body>
+</html>

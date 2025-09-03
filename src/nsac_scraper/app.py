@@ -1,27 +1,35 @@
+"""
+This module contains the Flask web application for the NASA Space Apps Challenge Scraper.
+
+It provides a web interface to view the scraped data, trigger the scraper, and export data to CSV.
+"""
 import csv
 import io
 import json
 import subprocess
 
-from flask import Flask, Response, jsonify, send_from_directory
+from flask import Flask, Response, jsonify, render_template
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="../../templates", static_folder="../../static")
 
 
 @app.route("/")
 def index():
-    return send_from_directory(".", "index.html")
+    """Renders the main dashboard page."""
+    return render_template("index.html")
 
 
 @app.route("/matrix")
 def matrix():
-    return send_from_directory(".", "matrix.html")
+    """Renders the historical matrix page."""
+    return render_template("matrix.html")
 
 
 @app.route("/api/data")
 def get_data():
+    """Returns the historical data from history.json."""
     try:
-        with open("history.json", "r") as f:
+        with open("data/history.json", "r") as f:
             data = json.load(f)
         return jsonify(data)
     except FileNotFoundError:
@@ -30,10 +38,16 @@ def get_data():
 
 @app.route("/api/run-scraper")
 def run_scraper():
+    """
+    Runs the scraper as a subprocess.
+
+    Returns:
+        A JSON response with the scraper's output or an error message.
+    """
     try:
         # We need to run the scraper with rye
         process = subprocess.Popen(
-            ["rye", "run", "python", "scraper.py"],
+            ["rye", "run", "python", "src/nsac_scraper/scraper.py"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
@@ -52,14 +66,17 @@ def run_scraper():
 
 @app.route("/api/history-to-csv")
 def history_to_csv():
+    """
+    Converts the history.json data to a CSV file and returns it as a download.
+    """
     try:
-        with open("history.json", "r") as f:
+        with open("data/history.json", "r") as f:
             history_data = json.load(f)
 
         if not history_data:
             return jsonify({"message": "No data in history.json to convert."}), 404
 
-        # Collect all unique challenge names
+        # Collect all unique challenge names to use as CSV headers
         all_challenges = set()
         for entry in history_data:
             for challenge in entry.get("challenges", []):

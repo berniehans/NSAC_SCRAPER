@@ -1,0 +1,24 @@
+{
+    "CHALLENGE_URLS": [
+        "https://www.spaceappschallenge.org/2025/challenges/animation-celebration-of-terra-data/?tab=teams",
+        "https://www.spaceappschallenge.org/2025/challenges/a-world-away-hunting-for-exoplanets-with-ai/?tab=teams",
+        "https://www.spaceappschallenge.org/2025/challenges/bloomwatch-an-earth-observation-application-for-global-flowering-phenology/?tab=teams",
+        "https://www.spaceappschallenge.org/2025/challenges/build-a-space-biology-knowledge-engine/?tab=teams",
+        "https://www.spaceappschallenge.org/2025/challenges/commercializing-low-earth-orbit-leo/?tab=teams",
+        "https://www.spaceappschallenge.org/2025/challenges/create-your-own-challenge/?tab=teams",
+        "https://www.spaceappschallenge.org/2025/challenges/data-pathways-to-healthy-cities-and-human-settlements/?tab=teams",
+        "https://www.spaceappschallenge.org/2025/challenges/deep-dive-immersive-data-stories-from-ocean-to-sky/?tab=teams",
+        "https://www.spaceappschallenge.org/2025/challenges/embiggen-your-eyes/?tab=teams",
+        "https://www.spaceappschallenge.org/2025/challenges/from-earthdata-to-action-cloud-computing-with-earth-observation-data-for-predicting-cleaner-safer-skies/?tab=teams",
+        "https://www.spaceappschallenge.org/2025/challenges/international-space-station-25th-anniversary-apps/?tab=teams",
+        "https://www.spaceappschallenge.org/2025/challenges/meteor-madness/?tab=teams",
+        "https://www.spaceappschallenge.org/2025/challenges/nasa-farm-navigators-using-nasa-data-exploration-in-agriculture/?tab=teams",
+        "https://www.spaceappschallenge.org/2025/challenges/sharks-from-space/?tab=teams",
+        "https://www.spaceappschallenge.org/2025/challenges/spacetrash-hack-revolutionizing-recycling-on-mars/?tab=teams",
+        "https://www.spaceappschallenge.org/2025/challenges/stellar-stories-space-weather-through-the-eyes-of-earthlings/?tab=teams",
+        "https://www.spaceappschallenge.org/2025/challenges/through-the-radar-looking-glass-revealing-earth-processes-with-sar/?tab=teams",
+        "https://www.spaceappschallenge.org/2025/challenges/will-it-rain-on-my-parade/?tab=teams",
+        "https://www.spaceappschallenge.org/2025/challenges/your-home-in-space-the-habitat-layout-creator/?tab=teams"
+    ],
+    "XPATH": "/html/body/main/section/div/div[3]/div/div/div/div[3]/div/p"
+}

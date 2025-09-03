@@ -1,0 +1,127 @@
+const matrixTableHead = document.querySelector('#matrix-table thead');
+const matrixTableBody = document.querySelector('#matrix-table tbody');
+
+let historicalData = [];
+let myChart; // To store the Chart.js instance
+
+async function fetchData() {
+    try {
+        const response = await fetch('/api/data');
+        historicalData = await response.json();
+        renderMatrix();
+        renderChart();
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}
+
+function renderMatrix() {
+    matrixTableHead.innerHTML = '';
+    matrixTableBody.innerHTML = '';
+
+    // Collect all unique challenges
+    const allChallenges = new Set();
+    historicalData.forEach(scrape => {
+        scrape.challenges.forEach(challenge => {
+            allChallenges.add(challenge.challenge);
+        });
+    });
+    const sortedChallenges = Array.from(allChallenges).sort();
+
+    // Header: Timestamp and then all unique challenges
+    const headerRow = document.createElement('tr');
+    headerRow.innerHTML = '<th>Timestamp</th>';
+    sortedChallenges.forEach(challengeName => {
+        headerRow.innerHTML += `<th>${challengeName}</th>`;
+    });
+    matrixTableHead.appendChild(headerRow);
+
+    // Body: Each row is a timestamp, followed by team counts for each challenge
+    historicalData.forEach(scrape => {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${new Date(scrape.timestamp).toLocaleString()}</td>`; // Include time
+
+        const challengeMap = {};
+        scrape.challenges.forEach(challenge => {
+            challengeMap[challenge.challenge] = challenge.team_count;
+        });
+
+        sortedChallenges.forEach(challengeName => {
+            const count = challengeMap[challengeName] || 0; // Display 0 if challenge not present for that scrape
+            row.innerHTML += `<td>${count}</td>`;
+        });
+        matrixTableBody.appendChild(row);
+    });
+}
+
+function renderChart() {
+    if (myChart) {
+        myChart.destroy(); // Destroy existing chart if it exists
+    }
+
+    const ctx = document.getElementById('challengeChart').getContext('2d');
+
+    const labels = historicalData.map(scrape => new Date(scrape.timestamp).toLocaleString());
+
+    const allChallenges = new Set();
+    historicalData.forEach(scrape => {
+        scrape.challenges.forEach(challenge => {
+            allChallenges.add(challenge.challenge);
+        });
+    });
+    const sortedChallenges = Array.from(allChallenges).sort();
+
+    const datasets = sortedChallenges.map(challengeName => {
+        const data = historicalData.map(scrape => {
+            const challenge = scrape.challenges.find(c => c.challenge === challengeName);
+            return challenge ? challenge.team_count : 0;
+        });
+        
+        // Generate a random color for each line
+        const color = `hsl(${Math.random() * 360}, 70%, 50%)`;
+
+        return {
+            label: challengeName,
+            data: data,
+            borderColor: color,
+            backgroundColor: color,
+            fill: false,
+            tension: 0.1
+        };
+    });
+
+    myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Evolution of Team Counts per Challenge'
+                },
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Timestamp'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Team Count'
+                    },
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+// Initial data fetch
+fetchData();
