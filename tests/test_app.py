@@ -40,19 +40,19 @@ def create_dummy_history_json(data=None):
         json.dump(data if data is not None else [], f, indent=4)
 
 
-def test_index(client):
+def test_index(test_client):
     """Test the index page."""
-    response = client.get("/")
+    response = test_client.get("/")
     assert response.status_code == 200
 
 
-def test_matrix(client):
+def test_matrix(test_client):
     """Test the matrix page."""
-    response = client.get("/matrix")
+    response = test_client.get("/matrix")
     assert response.status_code == 200
 
 
-def test_get_data_success(client):
+def test_get_data_success(test_client):
     """Test /api/data when history.json exists and has data."""
     dummy_data = [
         {
@@ -61,34 +61,34 @@ def test_get_data_success(client):
         }
     ]
     create_dummy_history_json(dummy_data)
-    response = client.get("/api/data")
+    response = test_client.get("/api/data")
     assert response.status_code == 200
     assert response.json == dummy_data
 
 
-def test_get_data_file_not_found(client):
+def test_get_data_file_not_found(test_client):
     """Test /api/data when history.json does not exist."""
-    response = client.get("/api/data")
+    response = test_client.get("/api/data")
     assert response.status_code == 404
     assert "history.json not found" in response.json["error"]
 
 
-def test_get_data_empty_file(client):
+def test_get_data_empty_file(test_client):
     """Test /api/data when history.json is empty."""
     create_dummy_history_json([])
-    response = client.get("/api/data")
+    response = test_client.get("/api/data")
     assert response.status_code == 200
     assert response.json == []
 
 
 @patch("threading.Thread")
 @patch("asyncio.run")
-def test_run_scraper_success(mock_asyncio_run, mock_thread, client):
+def test_run_scraper_success(mock_asyncio_run, mock_thread, test_client):
     """Test /api/run-scraper when scraper starts successfully."""
     mock_thread_instance = MagicMock()
     mock_thread.return_value = mock_thread_instance
 
-    response = client.get("/api/run-scraper")
+    response = test_client.get("/api/run-scraper")
 
     assert response.status_code == 202
     assert "Scraper started successfully" in response.json["message"]
@@ -100,14 +100,14 @@ def test_run_scraper_success(mock_asyncio_run, mock_thread, client):
 
 
 @patch("threading.Thread", side_effect=Exception("Thread start error"))
-def test_run_scraper_failure(mock_thread, client):
+def test_run_scraper_failure(mock_thread, test_client):
     """Test /api/run-scraper when scraper fails to start."""
-    response = client.get("/api/run-scraper")
+    response = test_client.get("/api/run-scraper")
     assert response.status_code == 500
     assert "Failed to start scraper" in response.json["message"]
 
 
-def test_history_to_csv_success(client):
+def test_history_to_csv_success(test_client):
     """Test /api/history-to-csv when history.json exists and has data."""
     dummy_data = [
         {
@@ -123,7 +123,7 @@ def test_history_to_csv_success(client):
         },
     ]
     create_dummy_history_json(dummy_data)
-    response = client.get("/api/history-to-csv")
+    response = test_client.get("/api/history-to-csv")
     assert response.status_code == 200
     assert response.headers["Content-Type"] == "text/csv; charset=utf-8"
     csv_content = response.data.decode("utf-8")
@@ -134,16 +134,16 @@ def test_history_to_csv_success(client):
     assert rows[2] == ["2023-01-02T00:00:00Z", "12", "5"]
 
 
-def test_history_to_csv_file_not_found(client):
+def test_history_to_csv_file_not_found(test_client):
     """Test /api/history-to-csv when history.json does not exist."""
-    response = client.get("/api/history-to-csv")
+    response = test_client.get("/api/history-to-csv")
     assert response.status_code == 404
     assert "history.json not found" in response.json["error"]
 
 
-def test_history_to_csv_empty_file(client):
+def test_history_to_csv_empty_file(test_client):
     """Test /api/history-to-csv when history.json is empty."""
     create_dummy_history_json([])
-    response = client.get("/api/history-to-csv")
+    response = test_client.get("/api/history-to-csv")
     assert response.status_code == 404
     assert "No data in history.json to convert" in response.json["message"]
