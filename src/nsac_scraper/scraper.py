@@ -97,6 +97,7 @@ def save_to_history(data, filename):
 
 
 async def main():
+    """Main function to orchestrate the scraping process."""
     # Load configuration from config.json
     with open("config.json", "r", encoding="utf-8") as f:
         config = json.load(f)

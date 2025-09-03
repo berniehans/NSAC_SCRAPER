@@ -63,9 +63,7 @@ def test_save_to_history():
 @patch("src.nsac_scraper.scraper.asyncio.gather", new_callable=AsyncMock)
 @patch("src.nsac_scraper.scraper.scrape_single_challenge", new_callable=AsyncMock)
 @patch("src.nsac_scraper.scraper.async_playwright")
-async def test_scrape_challenge_data_high_level(
-    mock_async_playwright, mock_scrape_single, mock_gather
-):
+async def test_scrape_challenge_data_high_level(mock_scrape_single, mock_gather):
     """Prueba la orquestación de múltiples scrapers."""
     mock_gather.return_value = [{"challenge": "Result", "team_count": 1}]
     test_urls = ["url1", "url2"]

@@ -19,6 +19,7 @@ scraper_running = False
 
 @app.route("/api/scraper-status")
 def get_scraper_status():
+    """Returns the current status of the scraper (running or idle)."""
     global scraper_running
     return jsonify({"status": "running" if scraper_running else "idle"})
 

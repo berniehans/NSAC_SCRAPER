@@ -11,11 +11,13 @@ from src.nsac_scraper.app import app as flask_app
 
 @pytest.fixture
 def app():
+    """Provides the Flask app for testing."""
     yield flask_app
 
 
 @pytest.fixture
 def client(app):
+    """Provides a test client for the Flask app."""
     return app.test_client()
 
 
@@ -28,6 +30,11 @@ def cleanup_files():
 
 
 def create_dummy_history_json(data=None):
+    """Creates a dummy history.json file for testing."
+
+    Args:
+        data (list, optional): The data to write to the JSON file. Defaults to None.
+    """
     os.makedirs("data", exist_ok=True)
     with open("data/history.json", "w", encoding="utf-8") as f:
         json.dump(data if data is not None else [], f, indent=4)
