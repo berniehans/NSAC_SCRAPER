@@ -16,9 +16,9 @@ def app():
 
 
 @pytest.fixture
-def client(flask_app_instance):
+def test_client(app):
     """Provides a test client for the Flask app."""
-    return flask_app_instance.test_client()
+    return app.test_client()
 
 
 # Fixture to clean up test files
@@ -81,8 +81,7 @@ def test_get_data_empty_file(test_client):
     assert response.json == []
 
 
-@patch("threading.Thread")
-@patch("asyncio.run")
+@patch("src.nsac_scraper.app.threading.Thread")
 def test_run_scraper_success(mock_thread, test_client):
     """Test /api/run-scraper when scraper starts successfully."""
     mock_thread_instance = MagicMock()
@@ -94,17 +93,17 @@ def test_run_scraper_success(mock_thread, test_client):
     assert "Scraper started successfully" in response.json["message"]
     mock_thread.assert_called_once()
     mock_thread_instance.start.assert_called_once()
-    # Verify that asyncio.run would be called with scraper_main
-    # This is implicitly tested by mocking threading.Thread and asyncio.run
-    # and checking if the thread starts. The actual execution is in the thread.
 
 
-@patch("threading.Thread", side_effect=Exception("Thread start error"))
-def test_run_scraper_failure(test_client):
+@patch(
+    "src.nsac_scraper.app.threading.Thread", side_effect=Exception("Thread start error")
+)
+def test_run_scraper_failure(mock_thread, test_client):
     """Test /api/run-scraper when scraper fails to start."""
     response = test_client.get("/api/run-scraper")
     assert response.status_code == 500
     assert "Failed to start scraper" in response.json["message"]
+    mock_thread.assert_called_once()
 
 
 def test_history_to_csv_success(test_client):
