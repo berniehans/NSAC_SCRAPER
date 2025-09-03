@@ -1,7 +1,7 @@
 [project]
 name = "nsac-scraper"
 version = "0.1.0"
-description = "Add your description here"
+description = "A web scraper and dashboard to track team participation in the NASA Space Apps Challenge."
 authors = [
     { name = "berniehans", email = "95459612+berniehans@users.noreply.github.com" }
 ]
