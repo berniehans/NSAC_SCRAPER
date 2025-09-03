@@ -23,13 +23,9 @@ repos:
     rev: v1.11.0
     hooks:
     -   id: mypy
-        # Opcional: añade argumentos si es necesario
-        # args: [--ignore-missing-imports]
 
 -   repo: https://github.com/PyCQA/bandit
     rev: 1.7.9
     hooks:
     -   id: bandit
         args: ["-x", "tests/"]
-      # Excluye el directorio de tests del análisis de seguridad
-      # args: ["-x", "tests/"]
