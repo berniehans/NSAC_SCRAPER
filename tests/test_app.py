@@ -16,9 +16,9 @@ def app():
 
 
 @pytest.fixture
-def client(app):
+def client(flask_app_instance):
     """Provides a test client for the Flask app."""
-    return app.test_client()
+    return flask_app_instance.test_client()
 
 
 # Fixture to clean up test files
@@ -83,7 +83,7 @@ def test_get_data_empty_file(test_client):
 
 @patch("threading.Thread")
 @patch("asyncio.run")
-def test_run_scraper_success(mock_asyncio_run, mock_thread, test_client):
+def test_run_scraper_success(mock_thread, test_client):
     """Test /api/run-scraper when scraper starts successfully."""
     mock_thread_instance = MagicMock()
     mock_thread.return_value = mock_thread_instance
@@ -100,7 +100,7 @@ def test_run_scraper_success(mock_asyncio_run, mock_thread, test_client):
 
 
 @patch("threading.Thread", side_effect=Exception("Thread start error"))
-def test_run_scraper_failure(mock_thread, test_client):
+def test_run_scraper_failure(test_client):
     """Test /api/run-scraper when scraper fails to start."""
     response = test_client.get("/api/run-scraper")
     assert response.status_code == 500
